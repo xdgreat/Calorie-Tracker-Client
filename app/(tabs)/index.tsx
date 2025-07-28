@@ -60,7 +60,7 @@ export default function HomeScreen() {
         </ThemedText>
       </ThemedView>
       <ThemedView>
-        <Link href={"/screens/cameraScreen"} style={styles.text}>
+        <Link href={"/(tabs)/cameraScreen"} style={styles.text}>
           Click mes!s
         </Link>
         <ThemedText

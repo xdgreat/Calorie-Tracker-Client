@@ -35,15 +35,33 @@ export default function TabLayout() {
           ),
         }}
       />
-      {/* <Tabs.Screen
+      <Tabs.Screen
         name="cameraScreen"
         options={{
-          title: "Cameras",
+          title: "Add to Pantry",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+            <IconSymbol size={28} name="plus.app" color={color} />
           ),
         }}
-      /> */}
+      />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          title: "notifications",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="plus.app" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="pantry"
+        options={{
+          title: "View Pantry",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="" color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

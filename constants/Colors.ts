@@ -25,4 +25,4 @@ export const Colors = {
   },
 };
 
-export const url = "http://192.168.100.3:3000/api/v1";
+export const url = "http://10.0.20.81:3000/api/v1";

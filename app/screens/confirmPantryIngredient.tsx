@@ -1,12 +1,21 @@
 import { useState } from "react";
-import { StyleSheet, View, ScrollView, TextInput, Alert, Pressable } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  TextInput,
+  Alert,
+  Pressable,
+} from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useLocalSearchParams } from "expo-router";
+import { url } from "@/constants/Colors";
 
 export default function ConfirmPantryIngredients() {
   type IngredientData = {
     name: string | null;
+    userID: number | null;
     servingSize: number;
     servingUnit: string;
     caloriesPerServing: number;
@@ -28,6 +37,7 @@ export default function ConfirmPantryIngredients() {
     ? JSON.parse(params.data as string)
     : {
         name: null,
+        userID: null,
         servingSize: 0,
         servingUnit: "g",
         caloriesPerServing: 0,
@@ -57,13 +67,16 @@ export default function ConfirmPantryIngredients() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const response = await fetch("YOUR_API_ENDPOINT", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(editableData),
-      });
+      const response = await fetch(
+        url + "/users/" + initialData.userID + "/pantry",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(editableData),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to save ingredient");
