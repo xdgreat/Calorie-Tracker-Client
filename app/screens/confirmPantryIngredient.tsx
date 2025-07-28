@@ -9,16 +9,17 @@ import {
 } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { url } from "@/constants/Colors";
 
 export default function ConfirmPantryIngredients() {
+  const router = useRouter();
   type IngredientData = {
     name: string | null;
     userID: number | null;
-    servingSize: number;
+    serving_size: number;
     servingUnit: string;
-    caloriesPerServing: number;
+    calories: number;
     isKcal: boolean;
     protein: string;
     fats: string;
@@ -26,7 +27,7 @@ export default function ConfirmPantryIngredients() {
     sugar: string;
     fiber: string;
     sodium: string;
-    ingredients: string[];
+    ingredients: string[] | null;
     tags: string[] | null;
     allergens: string[];
     isApproximate: boolean | null;
@@ -38,9 +39,9 @@ export default function ConfirmPantryIngredients() {
     : {
         name: null,
         userID: null,
-        servingSize: 0,
+        serving_size: 0,
         servingUnit: "g",
-        caloriesPerServing: 0,
+        calories: 0,
         isKcal: true,
         protein: "0g",
         fats: "0g",
@@ -48,7 +49,7 @@ export default function ConfirmPantryIngredients() {
         sugar: "0g",
         fiber: "0g",
         sodium: "0mg",
-        ingredients: [],
+        ingredients: [] as string[] | null,
         tags: null,
         allergens: [],
         isApproximate: null,
@@ -67,25 +68,31 @@ export default function ConfirmPantryIngredients() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const response = await fetch(
-        url + "/users/" + initialData.userID + "/pantry",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(editableData),
-        }
-      );
+      const item = [];
+      item.push(editableData);
+      item.push(editableData);
 
+      console.log(item);
+
+      const response: any = await fetch(url + "/users/1/pantry", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ items: item }),
+      });
       if (!response.ok) {
-        throw new Error("Failed to save ingredient");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to save ingredient");
       }
 
       const result = await response.json();
+      console.log("Ingredient saved:", result);
+      // Show success message
       Alert.alert("Success", "Ingredient saved successfully");
-      // Optionally navigate back or to another screen
+      router.navigate("/(tabs)/pantry");
     } catch (error: any) {
+      console.log("Error saving ingredient:", error);
       Alert.alert("Error", error.message || "Failed to save ingredient");
     } finally {
       setIsSaving(false);
@@ -116,8 +123,10 @@ export default function ConfirmPantryIngredients() {
           <View style={styles.inputRow}>
             <TextInput
               style={[styles.input, styles.numericInput]}
-              value={editableData.servingSize.toString()}
-              onChangeText={(text) => handleChange("servingSize", Number(text))}
+              value={editableData.serving_size.toString()}
+              onChangeText={(text) =>
+                handleChange("serving_size", Number(text))
+              }
               keyboardType="numeric"
               placeholder="0"
             />
@@ -130,10 +139,8 @@ export default function ConfirmPantryIngredients() {
           <View style={styles.inputRow}>
             <TextInput
               style={[styles.input, styles.numericInput]}
-              value={editableData.caloriesPerServing.toString()}
-              onChangeText={(text) =>
-                handleChange("caloriesPerServing", Number(text))
-              }
+              value={editableData.calories.toString()}
+              onChangeText={(text) => handleChange("calories", Number(text))}
               keyboardType="numeric"
               placeholder="0"
             />
@@ -181,7 +188,7 @@ export default function ConfirmPantryIngredients() {
           <ThemedText type="subtitle">Ingredients</ThemedText>
           <TextInput
             style={[styles.input, styles.multilineInput]}
-            value={editableData.ingredients.join(", ")}
+            value={editableData.ingredients?.join(", ") || ""}
             onChangeText={(text) =>
               handleChange(
                 "ingredients",
@@ -189,22 +196,6 @@ export default function ConfirmPantryIngredients() {
               )
             }
             placeholder="Comma separated ingredients"
-            multiline
-          />
-        </View>
-
-        <View style={styles.section}>
-          <ThemedText type="subtitle">Allergens</ThemedText>
-          <TextInput
-            style={[styles.input, styles.multilineInput]}
-            value={editableData.allergens.join(", ")}
-            onChangeText={(text) =>
-              handleChange(
-                "allergens",
-                text.split(",").map((i) => i.trim())
-              )
-            }
-            placeholder="Comma separated allergens"
             multiline
           />
         </View>

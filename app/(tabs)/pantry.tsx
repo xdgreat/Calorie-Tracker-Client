@@ -74,69 +74,68 @@ export default function PantryScreen() {
   }, [userID, filter, sortBy]);
 
   const handleAddItem = () => {
-    const pathName: any = `/pantry/add-item?userID=${userID}`;
-    router.navigate({ pathname: pathName });
+    router.navigate("/(tabs)/cameraScreen");
   };
-  const renderItem = ({ item }: { item: PantryItem }) => (
-    <View style={styles.itemContainer}>
-      <View style={styles.itemHeader}>
-        <Text style={styles.itemName}>{item.name}</Text>
-        <Text style={styles.itemQuantity}>
-          {item.quantity ?? 600}
-          {item.unit ?? "ml"}
-        </Text>
-      </View>
-      <View style={styles.expiryRow}>
-        {
-          (item.expiresAt =
-            item.expiresAt ||
-            new Date(
-              new Date().setDate(new Date().getDate() + 14)
-            ).toISOString())
-        }
-        <MaterialIcons
-          name="hourglass-bottom"
-          size={16}
-          color={
-            new Date(item.expiresAt) < new Date()
-              ? colors.danger
-              : colors.primary
-          }
-        />
-        <Text
-          style={[
-            styles.expiryText,
-            new Date(item.expiresAt) < new Date() && styles.expiredText,
-          ]}>
-          {formatDate(new Date(item.expiresAt))}
-        </Text>
-      </View>
-      {item.nutrition && (
-        <View style={styles.nutritionRow}>
-          <View style={styles.nutritionPill}>
-            <Text style={styles.nutritionText}>
-              🍞 {item.nutrition.carbs || 0}g
-            </Text>
-          </View>
-          <View style={styles.nutritionPill}>
-            <Text style={styles.nutritionText}>
-              🥩 {item.nutrition.protein || 0}g
-            </Text>
-          </View>
-          <View style={styles.nutritionPill}>
-            <Text style={styles.nutritionText}>
-              🥑 {item.nutrition.fats || 0}g
-            </Text>
-          </View>
-          <View style={styles.nutritionPill}>
-            <Text style={styles.nutritionText}>
-              🔥 {item.nutrition.calories || 0}kcal
-            </Text>
-          </View>
+  const renderItem = ({ item }: { item: PantryItem }) => {
+    item.expiresAt =
+      item.expiresAt ||
+      new Date(new Date().setDate(new Date().getDate() + 14)).toISOString();
+    return (
+      <View style={styles.itemContainer}>
+        <View style={styles.itemHeader}>
+          <Text style={styles.itemName}>{item.name}</Text>
+          <Text style={styles.itemQuantity}>
+            {item.quantity ?? 600}
+            {item.unit ?? "ml"}
+          </Text>
         </View>
-      )}
-    </View>
-  );
+        <View style={styles.expiryRow}>
+          <Text>
+            <MaterialIcons
+              name="hourglass-bottom"
+              size={16}
+              color={
+                new Date(item.expiresAt) < new Date()
+                  ? colors.danger
+                  : colors.primary
+              }
+            />
+          </Text>
+          <Text
+            style={[
+              styles.expiryText,
+              new Date(item.expiresAt) < new Date() && styles.expiredText,
+            ]}>
+            {formatDate(new Date(item.expiresAt))}
+          </Text>
+        </View>
+        {item.nutrition && (
+          <View style={styles.nutritionRow}>
+            <View style={styles.nutritionPill}>
+              <Text style={styles.nutritionText}>
+                🍞 {item.nutrition.carbs || 0}g
+              </Text>
+            </View>
+            <View style={styles.nutritionPill}>
+              <Text style={styles.nutritionText}>
+                🥩 {item.nutrition.protein || 0}g
+              </Text>
+            </View>
+            <View style={styles.nutritionPill}>
+              <Text style={styles.nutritionText}>
+                🥑 {item.nutrition.fats || 0}g
+              </Text>
+            </View>
+            <View style={styles.nutritionPill}>
+              <Text style={styles.nutritionText}>
+                🔥 {item.nutrition.calories || 0}kcal
+              </Text>
+            </View>
+          </View>
+        )}
+      </View>
+    );
+  };
 
   if (loading) {
     return (

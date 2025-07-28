@@ -45,20 +45,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="notifications"
-        options={{
-          title: "notifications",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="plus.app" color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="pantry"
         options={{
           title: "View Pantry",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="" color={color} />
+            <IconSymbol size={28} name="fork.knife" color={color} />
           ),
         }}
       />
